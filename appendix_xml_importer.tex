@@ -1,0 +1,17 @@
+%!TEX root = thesis.tex
+
+\chapter{Bugzilla importer XML parser issues} % (fold)
+\label{cha:bugzilla_importer_xml_parser_issues}
+When parsing Bugzilla data using the XML parser, several issues were found. A SAX parser has an event-based API, meaning the parser calls certain user specified callback methods when an event occurs. These events include the start and end of an XML element, and reading character in between these elements. The SAX parser in Evolizer was fundamentally broken. According to the specification\footnote{\url{http://www.saxproject.org/apidoc/org/xml/sax/ContentHandler.html}}, the SAX2 parser has several callback methods, of which three were implemented in Evolizer: \texttt{startElement}, \texttt{endElement} and \texttt{characters}. Let's say the following XML fragment is read by the parser:
+
+\begin{quote}
+\texttt{<commentid>64872</commentid>}
+\end{quote}
+
+\noindent
+When the start element is read, the \texttt{startElement} callback method is called. Similar, at the end of this line, the \texttt{endElement} callback method is called. When reading the data in between the XML tags, the \texttt{characters} method is called. A state machine is used to keep track of the elements that are read and makes that the data is converted into model classes. In this case, the ID of a \texttt{Comment} object would be set after the XML fragment was read. 
+
+Typically, state changes occur in the \texttt{startElement} and \texttt{endElement} methods. However, in Evolizer, the \texttt{characters} method was used for changing state. When reading characters in between a start and end element in XML, the \texttt{characters} callback method can be invoked \emph{multiple times} in order to read all data. In Evolizer, it was assumed the \texttt{characters} callback would only be called once (or twice, according to source code comments). This design choice resulted in unpredictable state changes and reading incomplete data\footnote{It probably would have been a better design choice to use a XML parser that is able to \emph{unmarshall} XML directly to the POJOs representing the meta-model. Although this approach has an impact on speed, this will not be noticed, since a pause of around a second is already present between consecutive bug imports.}.
+
+The issues mentioned above were mitigated by correctly implementing the state machine. This resulted in correct state change behavior and reading of all data in between XML tags.
+% chapter bugzilla_importer_xml_parser_issues (end)

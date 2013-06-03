@@ -1,0 +1,117 @@
+%!TEX root = thesis.tex
+
+\chapter{Conclusions and Future Work} % (fold)
+\label{cha:conclusions_and_future_work}
+In this chapter, the conclusions for this thesis will be summarised. Also, some pointers for future work are given.
+
+\section{Conclusions} % (fold)
+In software engineering, resources such as time, money and developers, are limited. Often when bugs are found in the software developed, bug triaging is used to prioritise bug reports and allocate resources to it. In large (open source) software projects, the number of bug reports can be considerable. When each of these bugs should be analysed by a bug triager, this will require a vast amount of time and effort. In order to assist the bug triager in the assessment of a bug, a large amount of data is already available. The goal of this research is to investigate the usefulness of stack traces in bug reports for the assessment of bug report properties, such as severity, priority and time-to-fix.
+
+In order to investigate the research questions and hypotheses, a research framework is developed. This framework consists of four major parts: source code extraction, issue report extraction and stack trace matching are used to create a consistent data set. After this, data analysis is applied to the data set to investigate our hypotheses. During this analysis, appropriate data sets are constructed for each hypothesis, which are in turn investigated using visualisations and descriptive statistics, as well as statistical research.
+
+Overall, we can conclude that stack traces can be used to link software artifacts. Also, stack traces can be a valuable input for prediction models, for example using metrics of related bugs and source files. Finally, lack of data makes that not all hypotheses in this thesis are conclusive. 
+
+The results of all hypotheses are summarised below.
+
+\subsection{Research question 1} % (fold)
+
+\questiona{}
+
+\vspace{\baselineskip}
+\hypaa{}
+\vspace{\baselineskip}
+
+\noindent
+The statistical analysis is not fully conclusive, but the particular shift in priority when a stack trace is present gives enough evidence to at least partially accept this hypothesis.
+
+\vspace{\baselineskip}
+\hypab{}
+\vspace{\baselineskip}
+
+\noindent
+Both the statistical analysis as well as the particular shift in severity when a stack trace is present gives enough evidence to accept this hypothesis.
+
+\vspace{\baselineskip}
+\hypac{}
+\vspace{\baselineskip}
+
+\noindent
+Due to a lack of data, we cannot conclude anything on this hypothesis.
+
+\vspace{\baselineskip}
+\hypad{}
+\vspace{\baselineskip}
+
+\noindent
+Some investigations are performed, but no evidence is found for an association between package size and severity. This hypotheses is rejected.
+
+\vspace{\baselineskip}
+\hypae{}
+\vspace{\baselineskip}
+
+\noindent
+Due to a lack of data, we cannot conclude anything on this hypothesis.
+
+\vspace{\baselineskip}
+\hypaf{}
+\vspace{\baselineskip}
+
+\noindent
+Some investigations are performed, but no evidence is found for an association between class size and severity. This hypotheses is  rejected.
+
+Evidence is found that both priority and severity tend to show a particular shift when a stack trace is present. It is shown that, in presence of a stack trace, more high priority and severity reports are present, and less low priority and severity bugs. Regarding package and class size, insufficient data is available to conclude anything on this. However, some evidence is found for the lack of an association between package or class size, and priority and severity. 
+
+Overall, the main problem for these investigations is lack of data. The Eclipse projects under investigation seem to pay little attention to assigning a representative priority and severity, since for virtually all bug reports, the priority and severity get assigned the default values. However, this could be tackled by importing data of more projects or using different open source projects that do use priority and severity in a consistent way.
+
+Concluding, the presence of a stack trace tends to result in more high priority and severity bugs, and less low priority and severity bugs. Severity seems a good candidate for a prediction model, since it is an absolute classification of a bug report. Priority on the other hand might be harder to predict, since assigning a priority to a bug report is mainly considered a cost-benefit decision. Still, related bugs might be a suitable source for a prediction model. Beyond that, in this thesis, no other metrics are found to be useful to predict the priority and severity of a bug report.
+
+\subsection{Research question 2} % (fold)
+
+\questionb{}
+
+\vspace{\baselineskip}
+\hypba{}
+\vspace{\baselineskip}
+
+\noindent
+Although the descriptive statistics looked promising, no statistical evidence is found for a decrease in time-to-fix when a stack trace is present. However, the work of Schr\"{o}ter \emph{et al.} \cite{Schroter2010} supports our descriptive statistics, which show that both the mean and median time-to-fix decreases significantly when a stack trace is present. In order to reach a conclusive result on this, more data should be investigated. This hypothesis is partially accepted.
+
+\vspace{\baselineskip}
+\hypbb{}
+\vspace{\baselineskip}
+
+\noindent
+Strong evidence is found for a decrease in time-to-fix when one or more stack traces are present in the first comment of a bug report, compared to the presence one or more stack traces in the remaining comments. This is consistent with the work of Schr\"{o}ter \emph{et al.} \cite{Schroter2010}. This hypothesis is accepted.
+
+\vspace{\baselineskip}
+\hypbc{}
+\vspace{\baselineskip}
+
+\noindent
+Little data is available, and this data does not show a correlation between class size and median time-to-fix. Due the limited amount of data, is is not possible to accept or reject this hypothesis.
+
+Concluding, presence of a stack trace and the position of this stack trace in the bug report both seem interesting features to use in a prediction model for fix time. Time-to-fix of a bug is positively affected by the presence of a stack trace, especially when this stack trace is in the first comment of the bug report. Based on the research performed in this thesis, we found evidence that stack traces might be useful in predicting the the time-to-fix.
+
+% section conclusions (end)
+
+\section{Future work} % (fold)
+\label{sec:future_work}
+This work is an exploratory search for interesting relations between software repository metrics and bug report properties. Despite initial optimism of the usage of stack traces, a thorough analysis of the data shows less promising results. Also, both the positive outcomes as well as the negative outcomes are subject to several threats to validity. 
+
+One improvement to this research is to apply it to more software projects, instead of just two projects from Eclipse. Both open source and closed source projects should be considered. With the selection of these projects, one should take into account the usage of priority and severity (are they used properly?). Also, sufficient data should be available. The funnel effect makes this research is almost only applicable to large data sets, i.e., projects with a long history.
+
+Next to this, the history of the source code should be taken into account. Not one FAMIX model and one source code model should be used, but several, for example one for each tagged release of the software. This way, older bugs have a more appropriate source code model to apply measurements to.
+
+For time-to-fix, we can make a distinction between stack traces that are added to the bug report before triaging (i.e., changing status to `confirmed') and stack traces that are added later on. Also, the number of comments before triaging might be interesting.
+
+When investigating a possible relation between class size and time-to-fix, one might also take into account the position of the stack frame in the stack trace. This position should be calculated by discarding all external classes (that are used in libraries for example), so we can focus on classes that have an actual size in the source repository.
+
+Next to priority, severity and time-to-fix, other bug report properties could be researched. For example, the most suiting developer to fix a specific bug could be detected using previous commits made to specific source files that are mentioned in the stack traces in a bug report. This study was not performed in this thesis, due to the fact that the number of core developers was very limited. Therefore, they were accountable for most commits. This could also be explained by the method of work of the Eclipse developer, where a small number of developers is responsible for committing actual changes by other developers.
+
+It might be also interesting to apply triaging tools to online software-as-a-service solutions, such as Github\footnote{\url{https://github.com/}}, Google Code\footnote{\url{http://code.google.com/}} or Codeplex\footnote{\url{http://www.codeplex.com/}}. These online repositories host a vast amount of both closed and open source projects. Also, tools such as wikis and issue trackers, are often already integrated. But far and foremost, most of these repositories contain a lot of `social coding' projects, where a lot of developers assist in the development of software.
+
+Finally, the FAMIX source code model can be used to determine a specific subsystem of the software where a bug occurred. Based on the issue history, a suitable developer might be found with adequate knowledge of this subsystem. By choosing the correct developer, `bug ping pong' can be prevented.
+
+% section future_work (end)
+
+% chapter conclusions_and_future_work (end)

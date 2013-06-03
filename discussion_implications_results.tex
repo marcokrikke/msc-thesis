@@ -1,0 +1,142 @@
+%!TEX root = thesis.tex
+
+\chapter{Discussion and Implication of the Results} % (fold)
+\label{cha:discussion_implication_of_the_results}
+This chapter discusses the implications of the results found in the previous chapters in more detail. Also, potential threats to the validity of the results found during the experiments are discussed.
+
+\section{Implication of the results} % (fold)
+\label{sec:implication_of_the_results}
+A total of two research questions are investigated in the previous chapters. In this section, the outcome of their hypotheses are discussed, including their implications for developers, reporters and bug triagers.
+
+\subsection{Priority and severity} % (fold)
+In Chapter~\ref{cha:results_priority_and_severity}, the hypotheses associated with research question R1 are evaluated:
+
+\vspace{\baselineskip}
+\questiona{}
+\vspace{\baselineskip}
+
+The first two hypotheses assess whether the presence of a stack traces results in a higher priority and severity. For \texttt{jdt.debug}, the statistical test does not show an association between priority and the presence of a stack traces. However, the relative number of high and low priority issues does change. For \texttt{jdt.core}, both the statistical test as well as the descriptive statistics show an association. For severity, for both datasets the statistical tests and descriptive statistics show an association with the presence of a stack trace. These results look promising. When a stack trace is present, both priority and severity show a particular shift, where the number of high priority and severity bugs increase, and the number of low priority and severity bugs decrease.
+
+In \cite{Bettenburg2007} and \cite{Zimmermann2010}, it is shown that the presence of a stack trace is a sign of quality of a bug report. High quality bug reports are likely to get more attention from developers and triagers, which might also be why they get assigned a more representative priority and severity, instead of the default value.
+
+Severity should be an absolute classification of a bug, i.e., in an ideal situation, the triager, developer, and reporter should all agree on this. However, in practice, reporters probably have less knowledge of the software than triagers and developers. In the end, the triager is the designated person to determine the severity of the bug. Schr\"{o}ter \emph{et al.} \cite{Schroter2010} showed that in up to 60\% of fixed bug reports, the bug is actually fixed in one of the methods mentioned in a stack trace. Stack traces therefore are valuable pointers to points of interest in the source code. This means that when a stack trace is present in the bug report, a triager might be able to perform a better assessment of the severity of a bug by inspecting the source code. This way, it might also be possible to assess a better priority for the bug report, since the possible costs for a fix might be easier to determine (by inspecting source code and related bugs).
+
+When priority and severity are related to package size (higher package size results in a higher priority or severity), very little data is available. This is due to the fact that both the number of priorities and severities, as well as the number of packages is low. Combined with a high percentage of bug reports being assigned default priority and severity, the number of data points available for analysis is very low. This is consistent with the research performed in \cite{Lamkanfi2010}. Only in the case of \texttt{jdt.core} and severity, some investigations could be performed. However, these did not show any significant result that points to a possible relation of severity and package size. It should be considered to perform this investigation with data that is more suitable (i.e., has more non-default severity and non-default priority bug reports).
+
+The final two hypotheses investigate a possible relation between priority and severity, and class size. For this, when class size increases, the priority and severity are expected to increase as well. Although the number of classes is much higher than the number of packages, again, there is a lack of data. This is once again due to the fact that a high number of bug reports is being assigned the default priority and severity. For the test with severity and class size for \texttt{jdt.debug}, no possible relation is found. When \texttt{jdt.core} and severity are investigated, no evidence of a shift in severity was found. Again, it should be considered to perform this investigation with data that is more suitable.
+
+For now, using the data for this specific research, no evidence was found for a relation between priority and severity, and package and class size.
+
+Overall, the main problem for these investigations is lack of data. The Eclipse projects under investigation seem to pay little attention to assigning a representative priority and severity, since for virtually all bug reports, the priority and severity are assigned the default values. This is not considered as a threat to validity, but most certain is disappointing for this research, since a careful investigation of some of the hypotheses is made impossible. However, this could be tackled by importing data of more projects or using different open source projects that do use priority and severity in a consistent way.
+
+Concluding, evidence is found that both priority and severity tend to show a particular shift when a stack trace is present. It is shown that, in presence of a stack trace, more high priority and high severity reports are present, and less low priority and severity bugs. Severity seems a good candidate for a prediction model, since it is an absolute classification of a bug report. Input for such a model can, for example, be bug reports that are related to the report under investigation by stack trace frames. Priority on the other hand might be harder to predict, since assigning a priority to a bug report is mainly considered a cost-benefit decision. But again, related bugs might be a suitable source for a prediction model. 
+
+For developers, no immediate use is found for the results, except for using stack traces in finding relevant pointers to the source code and to related bugs. For bug reports, adding a stack trace could be a good incentive to increase the priority and severity of a bug. Bugs reports that are considered high quality reports will get more attention from triagers, which might result in a more representative priority and severity. 
+
+\subsection{Time-to-fix} % (fold)
+The hypotheses associated with research question R2 are evaluated in Chapter~\ref{cha:results_time_to_fix}:
+
+\vspace{\baselineskip}
+\questionb{}
+\vspace{\baselineskip}
+
+First, it is investigated whether the time-to-fix of an issue decreases when a stack trace is present. Since only the complete bug repository for \texttt{jdt.debug} is imported, only this data set is taken in consideration. Although for \texttt{jdt.core}, still only a limited amount of imported bug reports contains an actual stack trace, we believe there might still be a bias. 
+
+The descriptive statistics for \texttt{jdt.debug} are promising, but the statistical test and further investigation of the data show no evidence for a decrease in time-to-fix. Our statistical results are not consistent with the work of Schr\"{o}ter \emph{et al.} \cite{Schroter2010}, who found strong evidence that bug reports that include one or more stack traces do indeed have a shorter lifetime. They also found that the lifetime of a bug decreases even further when the bug is fixed in a method mentioned in one of the stack frames. This corresponds with our descriptive statistics, which show that both the mean and median time-to-fix decreases significantly when a stack trace is present. In order to reach a conclusive result on this, more data should be investigated. Concluding, we partially accept the hypothesis that the time-to-fix of an issue decreases when a stack trace is present.
+
+Next, an investigation is performed to see if the time-to-fix decreases when the stack traces are in the \emph{first} comment of the bug report, compared to a bug report with stack traces in non-first comments. For \texttt{jdt.debug}, no statistical significant result is found. However, both the mean and median time-to-fix values increase quite a lot when a stack traces are present in the non-first comments. For \texttt{jdt.core} and the overall data set, a highly significant change is found. Due to the small sample size for \texttt{jdt.debug}, outliers probably have quite some influence on the statistics. This leads to the conclusion that the time-to-fix of a bug decreases significantly when the stack trace is present in the first comment of the bug report. This is consistent with the results of Schr\"{o}ter \emph{et al.} \cite{Schroter2010}. As mentioned before, they found strong evidence that bug reports that include one or more stack traces do indeed have a shorter lifetime. They also found that the lifetime of a bug decreases even further when the bug is fixed in a method mentioned in one of the stack frames. Regarding stack trace position in the bug report, they found that 70\% of the bugs were fixed in a stack frame from the \emph{first} stack trace in the bug report.
+
+Finally, a correlation analysis between class size and time-to-fix is performed. Again, the size of the data set is very small. Both visually and statistically, no correlation could be found. No previous work for this investigation was found. This investigation should again be performed with more data to get conclusive results.
+
+Again, the lack of data is an issue in the investigations. On the total number of issues imported, only a small percentage contains a stack trace. Overall this percentage is only 6.5\%, which is even lower than the 11\% found by Anvik \cite{Anvik2006}. An even smaller part can be matched to the source code and source code version history models. This funnel effect makes that in practice the number of data points in the actual data sets eligible for investigation, is very limited, especially when a minimum of matching classes is required for an investigation. This was not something that was expected on beforehand, but makes the third investigation impossible to be taken into consideration when answering research question R2.
+
+Concluding, presence of a stack trace and the position of this stack trace in the bug report both seem interesting features to use in a prediction model for fix time. Also, other properties can be taken into consideration, as described in \cite{Kim2006,Weiss2007,Panjer2007,Giger2010}, such as number of comments in related bug reports or the severity of related bug reports \cite{Weiss2007}. For reporters, it might be a great incentive to add stack traces to their bug reports, if they are aware that this might speed up fixing their bug. Triagers can use stack traces to, preferably automatically, find previous related bugs in order to assess the projected time-to-fix more accurately. Also, prediction algorithms can automate this task even further. For developers, stack traces are again considered as a helpful instrument in fixing a bug. They provide valuable pointers to related source code, that might speed up fixing a bug. Also, related bugs might give great insights in related fixes that are already applied to the software. For example, this can help in identifying regression bugs.
+
+% section implication_of_the_results (end)
+
+\section{Threats to validity} % (fold)
+\label{sec:threats_to_validity}
+The results of the research performed in this thesis are subject to several threats to validity. The following threats to validity will be discussed:
+
+\begin{itemize}
+	\item Construct validity: Are the experiments measuring what they claim to measure?
+	\item Internal validity: Are conclusions about possible causal relationships valid?
+	\item External validity: Can the findings of the study be generalised?
+	\item Statistical validity: Are the statistical tests accurate and correctly interpreted?
+\end{itemize}
+
+\subsection{Construct validity} % (fold)
+\label{sub:construct_validity}
+In this research, several possible relations are investigated:
+
+\begin{itemize*}
+	\item Priority versus presence of a stack trace;
+	\item Priority versus package size;
+	\item Priority versus class size;
+	\item Severity versus presence of a stack trace;
+	\item Severity versus package size;
+	\item Severity versus class size;
+	\item Time-to-fix versus presence of a stack trace;
+	\item Time-to-fix versus position of the stack trace in comments;
+	\item Time-to-fix versus class size.
+\end{itemize*}
+
+The definitions for priority, severity, time-to-fix, presence of a stack trace, position of a stack trace, package size and class size are clearly stated.
+
+The actual research framework used should match the conceptual model. For this, suitable meta-models should be selected, after which data sets can be imported and extracted. 
+
+\subsubsection{Model selection} % (fold)
+The Evolizer tool \cite{Gall2009,Ghezzi2008,Ghezzi2010}, that has been used in many existing studies \cite{Fischer,Fischer2003,D'Ambros2006,D'Ambros2007,Fischer2004,Pinzger2005}\footnote{also including work of the authors where the RHDB is used, which in turn is included in Evolizer}, includes a model for source code, source code history and bug reports. A potential risk concerns the quality of these models. Thorough investigations are performed to make sure all these models represent the real-world scenarios in a correct way. 
+
+A model for stack traces was not included in the Evolizer tool. Support for stack traces is added. With this model and the changes applied, the actual research framework is able to represent the conceptual model.
+
+\subsubsection{Importing data} % (fold)
+In order to provide the model with actual data, all data from the source code and issue repositories is imported. A possible risk concerns the integrity of the data. Several manual checks are performed to make sure the imported data equals the actual data in the repositories.
+
+During these checks, several bugs in the importer have been found. They have all been mitigated in order to ensure a correct import. 
+
+\subsubsection{Availability} % (fold)
+After importing data, the model should be a complete representation of the actual source repositories. Due to the amount of time importing a full version history repository takes, for \texttt{jdt.core} not all issues have been imported. This is a threat to the time-to-fix versus presence of a stack trace investigation. 
+
+To mitigate this risk, \texttt{jdt.core} data is excluded from this particular investigation.
+
+\subsubsection{Model extraction} % (fold)
+Based on the data imported, several models are extracted. The readily available extractions in Evolizer have been used in several publications \cite{Gall2009,Ghezzi2008,Ghezzi2010}. Therefore, there is no particular reason to doubt the correct functioning of the extraction. To be sure, a manual quality check has been performed.
+
+The current issue model is extended to have support for stack traces. Again, this is thoroughly tested to ensure correct behavior. This also applies to the matching algorithm for stack traces to the FAMIX and source code model.
+
+For this research, all issues are matched to only one FAMIX model. It would have been better to use several FAMIX models, representing the changes in source code over time. For example, one FAMIX model per tagged release could be used. However, since this research only uses package and class level granularities, this functionality was not implemented into Evolizer. Preliminary investigation of the used data sources showed that package and class names are relatively stable.
+
+\subsubsection{Metric calculation} % (fold)
+All metrics used should represent the actual real-world values and should be calculated correctly. In order to match the conceptual model, Evolizer is extended with two more metrics of package size. The time-to-fix metric has been altered to a more strict definition.
+
+In order to avoid any thread to validity, all metrics are strictly defined. Also, the actual calculations are tested and also checked manually.
+
+One threat to validity is the source code used to calculate time-to-fix for a class. Only the latest checked in revision is used for this, since it is quite hard to reliable relate a specific bug report to a specific revision of the source code file.
+% subsection construct_validity (end)
+
+\subsection{Internal validity} % (fold)
+Internal validity is about cause and effect. It tells something about the degree to which conclusions about cause and effect can be made, based on the research design. 
+
+In this research, only relations between relatively simple metrics are considered. It is of the utmost importance that these metrics do not change over time, for example by change of behavior in the usage of the source repositories. Several descriptive statistics about the data sets show no evidence for this.
+
+No further threats to internal validity are found. All investigations performed have a solid hypothesis. Also, no external threats are found during the research that could have had influence on the measurements.
+
+Finally, all data used is documented and imported to a fixed data set. This means the actual research performed can be reproduced.
+% subsection internal_validity (end)
+
+\subsection{External validity} % (fold)
+The research framework and methodology used can be easily used for other software projects and their associated repositories. However, this particular research has only been applied to two specific projects from the Eclipse open source project. Both the fact that only open source projects are considered, as well as the limited amount of projects under tests, are a threat to validity. 
+
+The goal of this research was to investigate the potential of stack traces in the assessment of bug report properties, and to develop a useful research framework for this. For future work, it is recommended to repeat this research on a wider range of projects, both open source and commercial.
+% subsection external_validity (end)
+
+\subsection{Statistical validity} % (fold)
+\label{sub:statistical_validity}
+To make sure the statistical tests used in this thesis are applied correctly, much effort is put into research of available statistical methods. For each situation, the assumptions a specific test makes are taken into consideration, such a normality of data and size of the data sets. Also, considerable effort is put into correct interpretation of the outcome of the tests.
+
+To achieve a valid result, the number of data points in each data set should be considerable. This is not the case for all data sets. This was not something that was expected on beforehand.
+% subsection statistical_validity (end)
+
+% section threats_to_validity (end)
+% chapter discussion_implication_of_the_results (end)

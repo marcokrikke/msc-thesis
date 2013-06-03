@@ -1,0 +1,142 @@
+\documentclass[twoside,a4paper,11pt]{memoir}
+
+% fix incompatibility between memoir and graphicx packages, both using ifpdf
+\makeatletter 
+\let\saved@ifpdf\ifpdf 
+\let\ifpdf\@undefined 
+\usepackage{ifpdf} 
+\@ifundefined{ifpdf}{% 
+  \let\ifpdf\saved@ifpdf 
+}{% 
+  \ifx\ifpdf\saved@ifpdf 
+  \else 
+    \latex@error{Different meaning of \@backslash ifpdf}\@ehc 
+  \fi   
+} 
+\makeatother
+
+\usepackage{a4}
+\usepackage{times}
+\usepackage{pslatex}
+\usepackage{url}
+\usepackage{mscthesis}
+\usepackage{lscape}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage{mdwlist}
+\usepackage{hyperref}
+\usepackage{color}
+\definecolor{tud}{RGB}{0,166,214}
+
+\hypersetup{
+	pdftitle={Investigating the usefulness of stack traces in bug triaging},    % title
+    pdfauthor={M.M. Krikke},     % author
+	colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black           % color of external links
+}
+
+% %% The package 'algorithm' is useful, but incompatible with memoir.
+% %% Cor-Paul Bezemer / http://homes.esat.kuleuven.be/~dvherten/esatthesis.html
+% %% suggest the following fix:
+\let\newfloat\undefined \usepackage{algorithmic} 
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{wrapfig}
+
+\let\subcaption\relax
+\let\subfloat\relax
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{booktabs}
+
+% set font to Latin Modern
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+%---------------------------------------------------------------------%
+%                     Options                                         %    
+%---------------------------------------------------------------------%
+
+\title{Investigating the usefulness of stack traces in bug triaging}
+\subtitle{Master's Thesis}
+
+\author{Marco Krikke}
+\authoremail{\url{marcokrikke@student.tudelft.nl}}
+\birthplace{Ede, The Netherlands}
+\studentid{1156004}
+
+% Optional (postscript) cover picture. Put this in comments when not needed.
+%\coverpicture{\includegraphics[width=13cm]{img/maze.ps}}
+
+% A copyright notice and maybe something about the cover picture
+% Put in comments to get the default copyright notice
+\colophon{\begin{wrapfigure}[2]{l}{1in}
+	\vspace{-15pt}
+	\includegraphics[width=1in]{img/by-sa.png}
+\end{wrapfigure}\noindent
+This thesis is licensed under a \href{http://creativecommons.org/licenses/by-sa/3.0/}{Creative Commons Attribution-ShareAlike 3.0 Unported License}.
+  %Cover picture: A ``random'' maze generated in postscript.
+}
+
+% thesis committee:
+\chair{prof. dr. A. van Deursen, Faculty EEMCS, TU Delft}
+\supervisor{dr. ir. M. Pinzger, Faculty EEMCS, TU Delft}
+\committeemember{dr. S.O. Dulman, Faculty EEMCS, TU Delft}
+
+\setcounter{tocdepth}{1}
+\setsecnumdepth{subsection}
+\maxsecnumdepth{subsection}
+
+\begin{document}
+\frontmatter
+\thispagestyle{empty}
+\maketitle                                      % for the cover page
+\makeformaltitlepages{\input{abstract}}         % for formal title pages with all info
+
+\include{preface}
+
+\cleardoublepage\tableofcontents
+\cleardoublepage\listoffigures
+\cleardoublepage\mainmatter
+
+\part{Introduction} % (fold)
+\label{prt:introduction}
+\include{introduction} 
+\include{related_work} 
+% part introduction (end)
+
+\part{Approach} % (fold)
+\label{prt:approach}
+\include{research_framework}
+\include{data_analysis}
+% part approach (end)
+
+\part{Results} % (fold)
+\label{prt:results}
+\include{project_selection}
+\include{descriptive_statistics}
+\include{results_prio_sev}
+\include{results_ttf}
+
+% part results (end)
+
+\part{Conclusions} % (fold)
+\label{prt:conclusions}
+\include{discussion_implications_results}
+\include{conclusions_and_future_work} 
+% part conclusions (end)
+
+\bibliographystyle{plain}
+\bibliography{thesis}
+
+\appendix
+\def\chaptername{Appendix}
+\include{appendix_xml_importer}
+\include{appendix_normality_tests}
+
+\end{document}

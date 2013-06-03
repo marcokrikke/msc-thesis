@@ -1,0 +1,146 @@
+%!TEX root = thesis.tex
+
+\chapter{\label{cha:intro}Introduction}
+Medical treatment has been applied to humans for centuries, trying to help recover patients from their health problems. In some situations, the demand for medical resources is higher than the available resources. For example in battlefield situations or disasters, the number of patients needing treatment can be a lot higher than the available medical resources, such as personnel, transport and medicine. In these situations, not all patients can be treated immediately, and some may not be treated at all. 
+
+The French baron Dominique--Jean Larrey is mostly attributed as the first person to devise a system to distribute available resources among the patient demand in the battlefield. Larrey was a Surgeon in Chief is the army of Napoleon Bonaparte, joining battle in Germany, Poland and Russia. Before the Napoleon Wars, injured soldiers were left in the battlefield, mainly taken care of by their fellow soldiers. Larrey however, evacuated wounded soldiers using `flying ambulances' and performed many treatments during the battle and even in the battlefield \cite{Baker2005}. 
+
+In order to distribute his available medical resources among the wounded soldiers, Larrey used a system to sort patients for treatment. His memoirs state: 
+
+\begin{quote}
+\emph{Those who are dangerously wounded should receive the first attention, without regard to rank or distinction. They who are injured in a less degree may wait until their brethren in arms, who are badly mutilated, have been operated on and dressed, otherwise the latter would not survive many hours; rarely, until the succeeding day.} \cite{Mackersie}
+\end{quote}
+
+Nowadays, the term used to maximise benefit to the group of injured patients in the case where limited resources are available is called \emph{triaging}. The term originates from the French verb `trier', meaning `to sort'. 
+
+\section{Research motivations}
+In software engineering, resources such as time, money and developers, are also limited. Often when bugs are found in the software developed, \emph{bug triaging} is used to prioritise bug reports and allocate resources to it. Just as in a battlefield situations, not all `patients' might get `treatment'. For example, costs to fix a bug might outweigh the benefits, a bug is non-severe and will never be fixed, or a bug is a duplicate of an already fixed bug.
+
+A bug triage can have several outcomes. Possibly, bugs are already reported and should be marked as duplicate. Otherwise, a 
+\begin{inparaenum}[(1)]
+\item severity and
+\item priority should be assigned, a 
+\item developer should be appointed, and a
+\item target version should be chosen.
+\end{inparaenum}
+The severity of a bug (i.e., the impact of the bug) is not the same as the importance to fix a bug (i.e., the priority). For example, a crash of a program is quite severe, but when the crash only occurs under very specific conditions, the associated bug report might be assigned the lowest priority.
+
+Bug triaging is a difficult process, where the \emph{triager} should have sufficient knowledge of the software product in order to make a good assessment of the bug report. The triager can use several sources to assess bug properties (e.g., severity, priority), such as software artifacts (source code, documentation), tools, existing knowledge and experience \cite{Panichella2012}. Bug triagers, even the most experienced ones, make mistakes, since they're always limited in their knowledge and experience. Mistakes, such as assigning a developer with little knowledge of the subsystem of the software where the bug occurs, can increase the fix time of a bug and can lead to low quality fixes \cite{Zimmermann2010,Bettenburg2007}.
+
+In large (open source) software projects, the number of bug reports can be considerable. Possibly, a large community is reporting bugs, but it is also possible that bug reports are automatically collected. When each of these bugs should be analysed by a bug triager, this will require a vast amount of time and effort. Especially when taken into consideration the high overall knowledge of a system that is needed.
+
+Automating certain tasks of a bug triager might be beneficial. For example, the detection of duplicate bugs saves a lot of time. Several studies already researched prediction models for priority and severity, mostly based on textual analysis \cite{Sun2011,Lamkanfi2010,Panichella2012}.
+
+\section{Goal of this thesis} % (fold)
+In order to assist the bug triager in the assessment of a bug, a large amount of data is already available, such as:
+
+\begin{itemize*}
+	\item documentation
+	\item source code
+	\item source code history in SCM systems (including patches, committers, et cetera)
+	\item tests
+	\item software models
+	\item related bug reports
+	\item stack traces in bug reports
+\end{itemize*}
+
+The goal of this research is to investigate the usefulness of \emph{stack traces} in bug reports for the assessment of bug report properties, such as severity, priority, time-to-fix and assigned developer. In order to achieve this, a research framework has been developed and an explorative study of a large data set has been performed. The most promising results are presented in this thesis.
+
+\subsection{Possible application: assisting the bug triager} % (fold)
+A possible application is the development of a prediction model to assist the bug triager. Stack traces can be used to relate bug reports to a bug report history that is built up over a vast amount of time. With this historical data, a prediction model can assist the bug triager in his assessment of bug report properties, such as priority and severity. Also, a source code model can be used to identify `important' parts of the software, resulting is a higher priority or severity. Possibly, the time-to-fix can also be predicted by considering related bug reports. Finally, the commit history in the source control repository might be able to assist in selecting a suitable developer to fix a bug.
+
+\section{Research questions} % (fold)
+\label{sec:research_questions}
+Stack traces in bug reports can be related to source code, and therefore also related to other bug reports. Also, several metrics of the source code can be calculated, such as lines of code and number of methods. 
+
+For this thesis, several investigations were performed on the data set, resulting in interesting leads. These leads resulted in the following research questions and corresponding hypothesis:
+
+\newcommand{\questiona}{\begin{minipage}[t]{4.5 in}\textbf{R1:} Can the priority and severity of a bug be predicted using stack traces in bug reports? \end{minipage}} 
+
+\newcommand{\hypaa}{\begin{minipage}[t]{4.5 in}\emph{H1.1:} The presence of one or more stack traces in a bug report leads to a more representative priority of the bug report. \end{minipage}} 
+
+\newcommand{\hypab}{\begin{minipage}[t]{4.5 in}\emph{H1.2:} The presence of one or more stack traces in a bug report leads to a more representative severity of the bug report. \end{minipage}} 
+
+\newcommand{\hypac}{\begin{minipage}[t]{4.5 in}\emph{H1.3:} A higher priority of a bug report corresponds with a larger size of the related source code packages of that bug report. \end{minipage}} 
+
+\newcommand{\hypad}{\begin{minipage}[t]{4.5 in}\emph{H1.4:} A higher severity of a bug report corresponds with a larger size of the related source code packages of that bug report. \end{minipage}} 
+
+\newcommand{\hypae}{\begin{minipage}[t]{4.5 in}\emph{H1.5:} A higher priority of a bug report corresponds with a larger size of the related source code classes of that bug report. \end{minipage}} 
+
+\newcommand{\hypaf}{\begin{minipage}[t]{4.5 in}\emph{H1.6:} A higher severity of a bug report corresponds with a larger size of the related source code classes of that bug report. \end{minipage}} 
+
+\vspace{\baselineskip}
+\questiona{}
+
+\vspace{\baselineskip}
+\hypaa{}
+
+\vspace{\baselineskip}
+\hypab{}
+
+\vspace{\baselineskip}
+\hypac{}
+
+\vspace{\baselineskip}
+\hypad{}
+
+\vspace{\baselineskip}
+\hypae{}
+
+\vspace{\baselineskip}
+\hypaf{}
+
+\vspace{\baselineskip}
+
+Stack traces are considered a useful resource in assisting developers to identify the location of a bug in the source code of an application. This might lead to a decreased fix time for bugs. This leads to the following research question and corresponding hypothesis:
+
+\newcommand{\questionb}{\begin{minipage}[t]{4.5 in}\textbf{R2:} Can stack traces in bug reports be used to predict the time-to-fix of a bug report? \end{minipage}} 
+
+\newcommand{\hypba}{\begin{minipage}[t]{4.5 in}\emph{H2.1:} The time-to-fix of a bug decreases when a stack trace is present in the bug report. \end{minipage}} 
+
+\newcommand{\hypbb}{\begin{minipage}[t]{4.5 in}\emph{H2.2:} The time-to-fix of a bug decreases when a stack trace is present and is in the first comment of the bug report.\end{minipage}} 
+
+\newcommand{\hypbc}{\begin{minipage}[t]{4.5 in}\emph{H2.3:} There is a correlation between the size of classes mentioned in a bug report (in stack traces) and fix time of bugs. \end{minipage}}
+
+\vspace{\baselineskip}
+\questionb{}
+
+\vspace{\baselineskip}
+\hypba{}
+
+\vspace{\baselineskip}
+\hypbb{}
+
+\vspace{\baselineskip}
+\hypbc{}
+\vspace{\baselineskip}
+
+\section{Contributions}
+The biggest contribution of this work is the investigation of the usefulness of stack traces in bug reports. First, the existing Evolizer research framework and corresponding meta-models \cite{Gall2009} have been extended to be able to extract and store stack traces from bug reports and match them to the FAMIX \cite{Tichelaar2001,Tichelaar2000} and source code history models. In order to correctly import the issue repository, several bug fixes have been applied. One example of such a fix is a complete rewrite of the Bugzilla XML importer to assure correct parsing of bug history data. Also, support for importing a specific list of bugs has been added. Furthermore, the data persistence framework has been adapted to prevent importing data multiple times in consecutive runs of the importer (for both source code and issue importer). 
+
+Next to this, a methodology is developed to investigate the data gathered using the research framework. Also, applicable statistical tests have been described, which can be useful in future research.
+
+In previous research, package size simply is the total number of lines of code of the associated classes of a package. In this thesis, two more definitions are proposed and tested.
+
+Finally, a complete data set for the \texttt{jdt.debug} project and a partial data set for \texttt{jdt.core} (not all issues were imported) have been created, which can be useful for future research. Also, all source code for the repository mining and linking (changes to Evolizer), scripts to create data sets for the investigation of the hypotheses, raw input data for the statistical scripts, and the actual statistical scripts\footnote{Mainly scripts in the R programming language for statistical computing, \url{http://www.r-project.org/}} to carry out the investigations, are all available for future research.
+
+Regarding the investigations performed, promising results have been found. We found that both priority and severity tend to show a particular shift when a stack trace is present. It is shown that, in presence of a stack trace, more high priority and high severity reports are present, and less low priority and severity bugs. Severity seems a good candidate for a prediction model, since it is an absolute classification of a bug report. 
+
+Presence of a stack trace and the position of this stack trace in the bug report both seem interesting features to use in a prediction model for fix time. We found some evidence that the time-to-fix of an issue decreases when a stack trace is present. Also, it was found that the time-to-fix of a bug decreases significantly when the stack trace is present in the first comment of the bug report. Both observations are consistent with previous work by Schr\"{o}ter \emph{et al.} \cite{Schroter2010}.
+
+\section{Outline}
+This thesis consists of three parts:
+\begin{inparaenum}[(I)]
+\item Introduction,
+\item Approach,  
+\item Results, and
+\item Conclusions.
+\end{inparaenum}
+
+You just read the introduction, stating the research motivations, goal of this thesis, research questions and the contributions made. In Chapter~\ref{cha:related_work}, related work is presented.
+
+In the Approach part, at first the research framework is introduced (Chapter~\ref{cha:research_framework}). Chapter~\ref{cha:data_analysis} explains how this research framework can be used to perform the actual data analysis in order to investigate the hypotheses.
+
+The research framework and data analysis are used in the third part of this thesis: Results. At first, Chapter~\ref{cha:project_selection} describes the requirements for the data sets and which data sets are selected. In order to get a feeling about the statistics for the data sets, Chapter~\ref{cha:descriptive_statistics} shows descriptive statistics for several metrics. Finally, Chapters \ref{cha:results_priority_and_severity} and \ref{cha:results_time_to_fix} show the results of the actual research performed.
+
+In the last part of this thesis, Chapter~\ref{cha:discussion_implication_of_the_results} discusses the implications of the results and states the threats to validity. Chapter~\ref{cha:conclusions_and_future_work} then summarises the conclusions of this thesis and gives pointers for future work.

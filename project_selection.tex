@@ -1,0 +1,59 @@
+%!TEX root = thesis.tex
+
+\chapter{Project Selection} % (fold)
+\label{cha:project_selection}
+This chapter describes the projects selected for the actual study performed in Chapters \ref{cha:results_priority_and_severity} and \ref{cha:results_time_to_fix}. 
+
+\section{Overview} % (fold)
+First, the requirements for suitable projects are stated. Next, the projects selected for the study are discussed. In the next chapter, descriptive statistics for the projects are presented, in order to get a more detailed view on the projects.
+% section overview (end)
+
+\section{Project requirements} % (fold)
+\label{sec:project_requirements}
+To expect statistically significant results using the research framework as described in Chapter~\ref{cha:research_framework}, sufficient data needs to be available to perform the investigations of our research questions and hypotheses. 
+
+We expect the number of issue reports that include a stack trace to be around 10\% of the total amount of issue reports, where each bug reports with a stack trace contains on average one stack trace. Also, we expect around 50\% of all issue reports being fixed and verified. With around 5000 issue reports, we expect to have sufficient data for our investigations. Regarding classes and packages, we expect 500 classes to be sufficient. With on average 20 classes per package, this comes down to 25 packages total. 
+
+In short, this comes down to the following requirements for the projects under investigation:
+
+\begin{itemize*}
+	\item sufficient issue reports (> 5000)
+	\item sufficient issue reports that include a stack trace (> 500)
+	\item sufficient issue reports that are fixed and verified (> 2500)
+	\item sufficient overall number of stack traces (> 500)
+	\item sufficient packages in source code (> 25)
+	\item sufficient classes in source code (> 500)
+\end{itemize*}
+
+% section project_requirements (end)
+
+\section{Selected projects} % (fold)
+\label{sec:selected_projects}
+In order to meet the requirements set in the previous section, project with a large issue report history and a high presence of stack traces are needed. With this in mind, the Eclipse project seems to be a solid pick.
+
+Several Eclipse sub-projects are available, of which projects for the Java Development Tools (JDT), which include support for Java building and debugging, are obvious choices. These projects were present in the first release of Eclipse and therefore have a long bug report history. Also, due to the technical nature of the Java development tools projects, sufficient stack traces are to be  expected. The JDT projects have also been extensively used in previous work \cite{Gall2009,Giger2010,Lamkanfi2010,D'Ambros2010,Bettenburg2008a}.
+
+From the JDT projects, JDT Debug\footnote{\url{http://www.eclipse.org/projects/project.php?id=eclipse.jdt.debug}} and JDT Core\footnote{\url{http://www.eclipse.org/projects/project.php?id=eclipse.jdt.core}} seem reasonable first picks.
+Table~\ref{tab:project-requirements} shows the required data for JDT Core and JDT Debug. All bug report data comes from the Eclipse bug tracker\footnote{\url{https://bugs.eclipse.org/}}, the source code from the Eclipse CVS repository\footnote{\url{http://dev.eclipse.org/viewcvs/}, CVS has been deprecated at Eclipse, projects are being moved to Git.}. All issue reports from the start of the repository to 13 January 2012 are considered. For source files, tagged revision R3\_7 is used.
+
+\begin{table}[!ht]\footnotesize
+	\centering
+	\begin{tabular}{lrrr}
+		\toprule
+		requirement & jdt.debug & jdt.core & overall \\
+		\midrule
+		issue reports & 7,815 & 13,871 & 21,686\\
+		issue reports with stack trace & $\approx$ 681 & $\approx$ 899 & $\approx$ 1,580 \\
+		fixed issue reports & 3,286 & 5,446 & 8,732 \\
+		packages & 32 & 50 & 82 \\
+		classes & 469 & 1,182 & 1,651 \\
+		\bottomrule
+	\end{tabular} 
+	\caption{Project requirements investigation. Number of issues reports with a stack trace is estimated based on a search query in Bugzilla.}
+	\label{tab:project-requirements}
+\end{table}
+
+As can be seen, all requirements stated in Section~\ref{sec:project_requirements} are met, except for the number of classes for \texttt{jdt.debug}. Since importing bug report repositories and CVS repositories into Evolizer is a lengthy process, \texttt{jdt.debug} and \texttt{jdt.core} will be regarded adequate picks to perform the investigations in this thesis. 
+
+% section selected_projects (end)
+% chapter project_selection (end)

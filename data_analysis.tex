@@ -1,0 +1,302 @@
+%!TEX root = thesis.tex
+
+\chapter{Approach} % (fold)
+\label{cha:data_analysis}
+This chapter describes the approach to perform the analysis on the data sets generated using the research framework of Chapter~\ref{cha:research_framework}, in order to investigate our research questions and hypothesis.
+
+\section{Overview} % (fold)
+\label{sec:overview}
+Section~\ref{sec:statistical_tests} briefly describes the statistical tests used to analyse the data. Sections \ref{sec:analysis:priority_and_severity} and \ref{sec:analysis:time_to_fix} describe how to gather the relevant data using the research framework and how to evaluate the hypotheses using statistical tests.
+% section overview (end)
+
+\section{Statistical tests} % (fold)
+\label{sec:statistical_tests}
+Several statistical tests can be used to investigate the hypotheses of this thesis. This section describes the tests that are actually used in Chapters \ref{cha:results_priority_and_severity} and \ref{cha:results_time_to_fix}. To execute the statistical tests, the R language and environment for statistical computing and graphics\footnote{\url{http://www.r-project.org/}} is used.
+
+The statistical significance of each test result is indicated using stars. The significance levels $\alpha$ used in this thesis are summarised in Table~\ref{tab:sig_levels}:
+
+\begin{table}[!ht]\footnotesize
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		$\alpha$ \\
+		\midrule
+		0.05 & * & significant\\
+		0.01 & ** & highly significant\\
+		0.001 & *** & extremely significant\\
+		\bottomrule
+	\end{tabular} 
+	\caption{Significance levels used in this thesis.}
+	\label{tab:sig_levels}
+\end{table}
+
+\subsection{D'Agostino Omnibus $K^2$ normality test} % (fold)
+\label{sub:d_agostino_normality_test}
+In order to choose a suiting statistical test for data, it is often needed to determine whether the data under investigation is sampled from a Gaussian distribution. Next to a visual inspection (using a histogram, density graph or QQ-plot), the D'Agostino Omnibus $K^2$ test \cite{D'Agostino1971,D'agostinoR.B.andBelangerA.andD'AgostinoJr1990} is used. The null hypothesis $H_0$ for this Omnibus test is: the data is sampled from a Gaussian distribution.
+
+The D'Agostino Omnibus test uses the skewness $\sqrt{b_1}$ and kurtosis $b_2$  of a data set to quantify the similarity with a Gaussian distribution:
+
+\begin{equation}
+	K^2 = (Z(\sqrt{b_1}))^2 + (Z(b_2))^2
+\end{equation}
+
+The $Z$-function is used to transform the values of skewness and kurtosis. A detailed calculation can be found in \cite{D'Agostino1971}. The distribution of $K^2$ is approximately a chi-squared distribution with two degrees of freedom. With this, a $p$-value can be calculated. 
+
+When the $p$-value is less than the significance level $\alpha$, the null hypothesis of normality is rejected.
+
+% subsection d_agostino_normality_test (end)
+
+\subsection{Chi-squared test} % (fold)
+\label{sub:chi_squared_test}
+Pearson's chi-squared test \cite{Pearson1900} is used as a test of independence between two categorical variables. The null hypothesis $H_0$ states: there is no association between the two variables.
+
+With the first variable having $r$ categories, and the second variable having $c$, a $r \times c$ contingency table can be constructed, containing the count values observed. Based on these count values (and their totals), the expected count value $E$ is determined by:
+
+\begin{equation}
+	E_{i,j}=\frac{(\sum_{n_c=1}^c O_{i,n_c}) (\sum_{n_r=1}^r O_{n_r,j})}{N} 
+\end{equation}
+
+where $O$ is the observed count, $n$ the number of cells and $N$ the sum of all cell values. The test statistic $\chi^2$ is defined as:
+
+\begin{equation}
+\chi^2 = \sum_{i=1}^{r} \sum_{j=1}^{c} {(O_{i,j} - E_{i,j})^2 \over E_{i,j}} 
+\end{equation}
+
+The distribution of $\chi^2$ is approximately a chi-squared distribution with $(r-1)(c-1)$ degrees of freedom. With this, the $p$-value can be calculated. When the $p$-value is less than the significance level $\alpha$, the null hypothesis of `there is no association between the two variables' is rejected.
+
+The validity of a chi-squared test depends on the sample size of the whole dataset and the expected theoretical cell counts. Cochran \cite{Cochran1954} states that, with respect to the expected cell counts, the chi-square approximation is adequate when the expected count is 5 or more in 80\% of the cells and no cells have an expected count less than one.
+
+To investigate which combination(s) of variables has a high impact on the $\chi^2$ statistic, one can take into account the contribution of each $(O-E)^2/E$ value to the overall chi-squared statistic. As a rule of thumb, when $(O-E)^2/E > 4$, that particular association is significantly different.
+
+% subsection chi_squared_test (end)
+
+\subsection{Wilcoxon Rank Sum test} % (fold)
+\label{sub:wilcoxon_rank_sum_test}
+Nonparametric tests are used on measures of central tendency (such as the median), when the distribution of the data set is not normal. When distributions are similarly shaped, the (Mann-Whitney) Wilcoxon Rank Sum test \cite{Wilcoxon1945, Mann1947} can be used to determine if there is a shift in location of this central tendency.
+
+The Wilcoxon Rank Sum test assumes the two independent continuous random samples $X$ and $Y$ have a measurement scale that is at least ordinal. Also, the distributions of $X$ and $Y$ are identically shaped, and only have a shift in location $\theta$. The null hypothesis $H_0$ of the Wilcoxon Rank Sum test states that the median value $M$ of $X$ and $Y$ are the same: $M_x = M_y$. Three possible alternative hypothesis are:
+
+\begin{enumerate}
+	\item $H_a$ : $M_x \neq M_y$
+	\item $H_a$ : $M_x < M_y$
+	\item $H_a$ : $M_x > M_y$
+\end{enumerate}
+
+The algorithm for the Wilcoxon Rank Sum test is described in detail in the original paper \cite{Wilcoxon1945} from Frank Wilxocon.  When the $p$-value is less than the significance level $\alpha$, the null hypothesis that states the median values of the data sets are equal, is rejected.
+
+In order to investigate the sign of the shift in location $\theta$ of the median, let's state that $F(x)$ and $G(x)$ are the distribution functions of $X$ and $Y$ respectively. The shift in location $\theta$ is now defined by:
+
+\begin{equation}
+	G(x) = F(x + \theta) \mbox{ for all } x
+\end{equation}	
+
+% subsection wilcoxon_rank_sum_test (end)
+
+\subsection{Kendall tau-b rank correlation coefficient} % (fold)
+\label{sub:kendall_tau_b_rank_correlation_coefficient}
+Kendall's tau test \cite{Kendall1938} can be used to test a possible association between two categorical random variables $X$ and $Y$, and does not rely on the distributions of $X$ and $Y$. The null hypothesis $H_0$ states: there is no association between $X$ and $Y$. 
+
+The original algorithm from Kendall does not account for \emph{ties}. A pair is tied if for ${(x_i, y_i), (x_j, y_j)}$, $x_i = x_j$ or $y_i = y_j$. In order to make adjustments for these ties, the tau-b variant \cite{Adler1957} of Kendall's test is used.
+
+The $\tau_B$ coefficient will be in the range $-1 \leq \tau_B \leq 1$ and indicates the strength and sign of the relationship between the two variables $X$ and $Y$. Since only the strength of the relationship is of interest, the absolute value of $\tau_B$ is used. Table~\ref{tab:tau_correlation} shows how to interpret the $\tau_B$ coefficient in terms of correlation.
+
+\begin{table}[!ht]\footnotesize
+	\centering
+	\begin{tabular}{ll}
+		\toprule
+		Value & Type \\
+		\midrule
+		$\tau_B = 0$ & No correlation \\
+		$0 < \tau_B < 0.5$ & Weak correlation \\
+		$0.5 \leq \tau_B \leq 0.7$ & Substantial correlation \\
+		$0.7 < \tau_B < 1$ & Strong correlation \\
+		$\tau_B = 1$ & Perfect correlation \\
+		\bottomrule
+	\end{tabular} 
+	\caption{Interpretation of correlation coefficient}
+	\label{tab:tau_correlation}
+\end{table}
+
+The $p$-value can again be used to accept or reject the null hypothesis. When the $p$-value is less than the significance level $\alpha$, we reject that there is no association between $X$ and $Y$. 
+% subsection kendall_tau_b_rank_correlation_coefficient (end)
+
+% section statistical_tests (end)
+
+\section{Priority and severity} % (fold)
+\label{sec:analysis:priority_and_severity}
+
+This section describes the methodology used to answer research question R1:
+
+\vspace{\baselineskip}
+\questiona{}
+\vspace{\baselineskip}
+
+For each investigation of the hypotheses of R1, we describe how the data sets should be composed and how to subsequently analyse these data sets.
+
+\subsection{Analysis of priority and severity related to the presence of a stack trace} % (fold)
+\label{sub:da:analysis_of_priority_and_severity_related_to_the_presence_of_a_stack_trace}
+When a stack trace is present, a bug triager might be able to identify the location of a bug in source code more easily. This way, it might be also easier to assign a representative priority and severity to the bug report (i.e., less bugs with default priority and severity). This section describes the methodology to investigate hypotheses H1.1 and H1.2:
+
+\vspace{\baselineskip}
+\hypaa{}
+
+\vspace{\baselineskip}
+\hypab{}
+
+\vspace{\baselineskip}
+
+\subsubsection{Composition of data set}
+All issue reports are split into two groups: issues with and issues without a stack trace. For each of these groups, the number of issue reports for every priority (and severity) is counted.
+
+\subsubsection{Analysis}
+To test whether there is an association between priority and presence of a stack trace (and between severity and presence of a stack trace), a statistical test of independence is performed. The null hypothesis $H_0$ of such a test states `there is no association between two variables', where the alternative hypothesis $H_a$ states `the two variables are associated'. Since the data under test is categorical data (i.e., count data), a chi-squared test is used.
+
+For priority, a $p \times c$ contingency table is constructed, where $p$ is the number of priorities and $c$ the two groups (issue reports with and without a stack trace). Similar, for severity a $s \times c$ contingency table is constructed.
+
+For these contingency tables, the $\chi^2$ metric is calculated and the validity of the outcome is checked using the sample size of the whole dataset and the expected theoretical cell counts.
+
+Based on the $p$-value of the $\chi^2$ test, it is determined whether the result is statistically significant. If this turns out to be true, the null hypothesis is rejected, giving evidence that there is an association between the variables.
+
+In order to investigate which cell(s) in the contingency table contribute significantly to the association, the contribution of each $(O-E)^2/E$ value to the overall chi-squared statistic is considered. 
+% subsection analysis_of_priority_and_severity_related_to_the_presence_of_a_stack_trace (end)
+
+\subsection{Analysis of priority and severity related to package size} % (fold)
+\label{sub:da:analysis_of_priority_and_severity_related_to_package_size}
+When one or more stack traces are present in comments of a bug report, it is possible to relate each bug report to one or more source packages mentioned in the stack frames. A larger package size might point to a more important subsystem of the software, hence to a higher priority or severity of a bug. This section describes the methodology to investigate hypotheses H1.3 and H1.4:
+
+\vspace{\baselineskip}
+\hypac{}
+
+\vspace{\baselineskip}
+\hypad{}
+
+\vspace{\baselineskip}
+
+The \emph{size} of a package is not bound to a single evident definition. Three possible definitions are investigated in this thesis:
+
+\begin{enumerate*}
+	\item number of classes (NOC)
+	\item total lines of code of associated classes (SUMLOC)
+	\item (arithmetic) mean of lines of code of associated classes (AVGLOC)
+\end{enumerate*}
+
+\subsubsection{Composition of data set}
+For each bug report with a stack trace, all associated packages are determined, which in turn have the above mentioned size metrics (when their associated classes can be found in the source code repository). A bug report can have multiple stack traces, and a stack trace can have multiple associated packages. This results in a list of pairs \emph{(report, package)}. 
+
+It is possible that the same stack trace is mentioned multiple times in a bug report (for example in a quoted message). Also, a package can be mentioned multiple times in a stack trace. In order to make sure these duplicates do not affect the statistics, only unique pairs \emph{(report, package)} are considered.
+
+\subsubsection{Analysis}
+In order to investigate whether there is a relation between priority (or severity) and package size, a pairwise comparison of the median values of each data set is made. For priority, P1 and P2 are compared, P2 and P3, et cetera. For severity, `blocker' and `critical' are compared, `critical' and `major', et cetera. The median values of each data set are compared to show whether or not these median values increase when the priority (or severity) increases. 
+
+First, the data sets are visually inspected using box plots for each priority and severity, showing the distribution of the package size. Also, some descriptive statistics of package size, such as minimum, maximum, mean and median, are inspected.
+
+Next, the D'Agostino normality test is applied to determine if the distribution of the data sets is normal. Also, by visually inspecting the density graph of all data sets, it is determined whether the distributions of the data sets are similar shaped.
+
+If the data sets are not normal distributed, but the distributions of the data sets are similar shaped, the Wilcoxon Rank Sum test can be used to compare the medians of the data sets. Otherwise, another suitable statistical test should be used. The null hypothesis $H_0$ for the Wilcoxon test is $M_1 = M_2$, where $M_i$ is the median of group $i$. In other words, the median values of the two data sets do not differ. The alternative one-sided hypothesis $H_a$ is $M_1 > M_2$. This alternative hypothesis of the Wilcoxon Rank Sum test corresponds to the hypotheses that are investigated in this section.
+
+Based on the $p$-value of the Wilcoxon Rank Sum test, it is determined whether the result is statistically significant. If this turns out to be true, the null hypothesis is rejected, giving evidence there is a shift $\theta$ in medians. Whether the location shift corresponds with the chosen alternative hypothesis is determined by the sign of $\theta$.
+
+% subsection analysis_of_priority_and_severity_related_to_package_size (end)
+
+\subsection{Analysis of priority and severity related to class size} % (fold)
+\label{sub:analysis_of_priority_and_severity_related_to_class_size}
+Lines of code of a class is often used as one of the most important metrics for class size. Other metrics, such as number of methods, fan-in and fan-out are sometimes also considered. This section describes the methodology to investigate if there is a relation between the priority (and the severity) of a bug report and the lines of code of the corresponding classes listed in the stack traces of that bug report. This corresponds to hypotheses H1.5 and H1.6:
+
+\vspace{\baselineskip}
+\hypae{}
+
+\vspace{\baselineskip}
+\hypaf{}
+
+\vspace{\baselineskip}
+
+\subsubsection{Composition of data set}
+For each bug report with a stack trace, all associated classes are determined, which all have a lines of code metric (when the source code of the class can be found in the source code repository). A bug report can have multiple stack traces, and a stack trace can have multiple associated classes. This results in a list of pairs \emph{(report, class)}. It is possible that the same stack trace is mentioned multiple times in a bug report (for example in a quoted message). Also, a class can be mentioned multiple times in a stack trace. 
+
+In order to make sure these duplicates do not affect the statistics, only \emph{unique} pairs \emph{(report, class)} are considered. The length of a stack trace is not taken into consideration: all unique pairs are used, creating as many relations between data sets as possible.
+
+\subsubsection{Analysis}
+In order to investigate whether there is a relation between priority (or severity) and class size, a pairwise comparison of the median values of each data set is made. For this, the same analysis as described in Section~\ref{sub:da:analysis_of_priority_and_severity_related_to_package_size} is applied, again using the Wilcoxon Rank Sum test. 
+
+% subsection analysis_of_priority_and_severity_related_to_class_size (end)
+
+% section priority_and_severity (end)
+
+\section{Time-to-fix} % (fold)
+\label{sec:analysis:time_to_fix}
+This section describes the methodology used to answer research question R2:
+
+\vspace{\baselineskip}
+\questionb{}
+\vspace{\baselineskip}
+
+For each investigation of the hypotheses of R2, it is described how the data sets should be composed and how to subsequently analyse these data sets.
+
+\subsection{Analysis of time-to-fix versus presence of stack traces in bug report} % (fold)
+\label{sub:da:analysis_of_time_to_fix_versus_presence_of_stack_traces_in_bug_report}
+One would expect that the time-to-fix of a bug decreases when a stack trace is present in the bug report, as showed in previous work by Schr\"{o}ter \emph{et al.} \cite{Schroter2010}. With this stack trace, it might be easier to reproduce the bug or to know where to look in the source code. This section describes the methodology used to hypothesis H2.1:
+
+\vspace{\baselineskip}
+\hypba{}
+
+\subsubsection{Composition of data set}
+All bug reports marked with status \textsc{verified} and resolution \textsc{fixed} are split into two groups: 
+
+\begin{enumerate*}
+	\item bug reports that include a stack trace in one or more of the comments, and
+	\item bug reports that do not include a stack trace.
+\end{enumerate*}
+
+For each bug report, the time-to-fix is calculated. All reports with a time-to-fix of $0$ days are removed from the data sets, since these reports probably are only created for administrative reasons.
+
+\subsubsection{Analysis}
+In order to investigate if the time-to-fix of a bug decreases when a stack trace is present in the bug report, the median time-to-fix for the data sets with and without stack traces are compared. 
+
+First, some descriptive statistics and a visual representation (box plots) are used to perform a first inspection of the data. Next, the D'Agostino normality test is applied to determine if the distribution of the data sets is normal. Also, by visually inspecting the density graph of all data sets, it is determined whether the distributions of the data sets are similar shaped.
+
+If the data sets are not normally distributed, but the distributions of the data sets are similar shaped, the Wilcoxon Rank Sum test can be used to compare the medians of the data sets. Otherwise, another suitable statistical test should be used. The null hypothesis $H_0$ for the Wilcoxon test is $M_1 = M_2$, where $M_i$ is the median of group $i$. In other words, the median values of the two data sets do not differ. The alternative one-sided hypothesis $H_a$ is $M_1 < M_2$. This alternative hypothesis of the Wilcoxon Rank Sum test corresponds to the hypothesis that is investigated in this section.
+
+Based on the $p$-value of the Wilcoxon Rank Sum test, it is determined whether the result is statistically significant. If this turns out to be true, the null hypothesis is rejected, giving evidence there is a shift $\theta$ in medians. Whether the location shift corresponds with the chosen alternative hypothesis is determined by the sign of $\theta$.
+% subsection analysis_of_time_to_fix_versus_presence_of_stack_traces_in_bug_report (end)
+
+\subsection{Analysis of time-to-fix versus stack trace position in comments} % (fold)
+\label{sub:da:analysis_of_time_to_fix_versus_stack_trace_position_in_comments}
+The previous section investigated if there is evidence for a decrease in time-to-fix when a stack trace is present. This section investigates whether the time-to-fix is positively affected (i.e., decreases) when the stack trace is present in the \emph{first} comment of a bug report. This way, the stack trace is immediately available to the bug traiger, and can therefore be used in the assessment of the bug report. This is formalised in hypothesis H2.2:
+
+\vspace{\baselineskip}
+\hypbb{}
+
+\subsubsection{Composition of data set}
+Again, all bug reports marked with status \textsc{verified} and resolution \textsc{fixed} are split into two groups: 
+
+\begin{enumerate*}
+	\item bug reports with one or more stack traces in the first comment, and
+	\item bug reports with one or more stack traces in non-first comment(s).
+\end{enumerate*}
+
+For each bug report, the time-to-fix is calculated. All reports with a time-to-fix of $0$ days are removed from the data sets, since these reports probably are only created for administrative reasons.
+
+\subsubsection{Analysis}
+The analysis for these data sets equals the analysis as described in Section~\ref{sub:da:analysis_of_time_to_fix_versus_presence_of_stack_traces_in_bug_report}.
+
+% subsection analysis_of_time_to_fix_versus_stack_trace_position_in_comments (end)
+
+\subsection{Correlation analysis between class size and time-to-fix} % (fold)
+\label{sub:da:correlation_analysis_between_class_size_and_time_to_fix}
+When one or more stack traces are present in comments of a bug report, it is possible to relate each bug report to one or more source classes. A larger class size might point to less understandable code, hence to a higher time-to-fix for a bug. This section shows the methodology used to investigated if there is a relation between class size and time-to-fix of a bug report. This equals hypothesis H2.3:
+
+\vspace{\baselineskip}
+\hypbc{}
+
+\subsubsection{Composition of data set}
+The total data set contains all classes that are matched to at least \emph{ten} bug reports that have a time-to-fix (i.e., have status \textsc{verified} and resolution \textsc{fixed}). All bug reports with a fix time of 0 days are removed from the data set. For each class, the median time-to-fix of all matching issues is calculated. This results in a data set of (\emph{ttf},\emph{loc}) pairs.
+
+\subsubsection{Analysis}
+First, a scatter plot of all data points is used to visualise the possible correlation between time-to-fix and class size. To this scatter plot, a linear regression line and a non-parametric Loess \cite{Cleveland1979,Cleveland1988} regression line are added. Since a Loess regression line is non-parametric, it does not make an assumption about the form of the relationship between time-to-fix and class size. Next to the scatter plot, a box plot for both the median time-to-fix and the lines of code is used to inspect the distribution of these values.
+
+In order to statistically verify if a correlation is present, the Kendall tau-b rank correlation coefficient ($\tau_B$) is calculated. When the $p$-value of the Kendall tau-b test makes that the null hypothesis $H_0$ is rejected, there is evidence that there is association between the median time-to-fix and class size. The $\tau_B$ value then indicates the strength of the correlation, as can be seen in Table~\ref{tab:tau_correlation}.
+
+% subsection correlation_analysis_between_class_size_and_time_to_fix (end)
+
+% section time_to_fix (end)
+% chapter data_analysis (end)

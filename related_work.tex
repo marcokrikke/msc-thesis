@@ -1,0 +1,99 @@
+%!TEX root = thesis.tex
+
+\chapter{Related Work} % (fold)
+\label{cha:related_work}
+
+Much research has been done on software repository mining, modeling of these repositories, and creating prediction models for bug properties. In this chapter, we give an overview of the research performed in these fields.
+
+\section{Overview} % (fold)
+This chapter introduces related work to the research performed in this thesis. First, Section~\ref{sec:repository_mining_and_meta_models} shows how several types of repositories are mined and which meta-models are used in previous research. Section~\ref{sec:bug_triaging} then mentions several bug triaging techniques, such as duplicate bug detection, expert finding, and assessing priority, severity and time-to-fix. In Section~\ref{sec:quality_of_bug_reports}, the notion of `quality' is introduced for bug reports. Finally, Section~\ref{sec:usage_of_stack_traces} shows how stack traces were used in previous work.
+
+For some background on the statistical tests used in this work, please refer to Section~\ref{sec:statistical_tests}.
+% section overview (end)
+
+\section{Repository mining and meta-models}
+\label{sec:repository_mining_and_meta_models}
+Over the years, many researchers mined repositories with software artifacts to enable their research. These repositories include source code change history, mailing lists, wikis, bug repositories, et cetera. This section mentions some work that has been done over the years in mining software artifact repositories and their approaches in linking repositories.
+
+Mockus \emph{et al.} \cite{Mockus2002} use email archives, bug tracker issues and source code change history (CVS) to compare open source software development processes with several commercial projects. Several scripts are used to link repositories using static properties. For example, bug ids are extracted from commit messages in order to link commits to bugs. Also, user names are matched between the various systems.
+
+Canfora \emph{et al.} \cite{Canfora2006a} combine source code change history and bug repositories with text mining techniques to enable impact analysis. In their approach, natural language is used to link bug reports to source code artifacts. This way, developers know what source code should be worked on to resolve a particular issue. A similar approach is used by Panichella \emph{et al.} \cite{Panichella2012}, who claim that ``unstructured communication between developers can be a precious source of information to help understanding source code''. They use emails and bug reports to automatically extract descriptions for methods in source code. Although they claim to be able to extract method descriptions with high precision, emails and bug reports contain relevant descriptions for only 7\% to 36\% of the software projects under investigation. 
+
+Fischer \emph{et al.} introduced the Release History Database (RHDB) in \cite{Fischer}, which combines version and bug report data into a relational database. As an additional step, commit messages are linked to bug reports by extracting bug identifiers from the commit messages. The RHDB uses the CVS version history system and Bugzilla, but can be used for other repositories as well, resulting in a more abstract view of software repositories. The coupling between bug reports and commits was found to be useful to detect logically coupled files, identification of classes prone to errors, and code maturity estimation \cite{Fischer,Fischer2003}. D'Ambros \emph{et al.} \cite{D'Ambros2006} use the RHDB in their BugCrawler tool, which presents a visualisation of the relationship between the evolution of software artifacts and how they are affected by bugs. In other work by D'Ambros \emph{et al.} \cite{D'Ambros2007}, the RHDB is used to visualise the life cycle of bug reports.
+
+When, next to source code history and bug reports, also a model of the source code itself is taken into account, visualisation of feature dependencies and evolution of the software is possible \cite{Fischer2004}. For this, features are extracted from the source code and added to the RHDB. Pinzger \emph{et al.} combine static and dynamic source code analysis with release history data in the ArchEvo tool \cite{Pinzger2005}, which can be used to analyse the evolution of a software architecture. The FAMIX meta-model \cite{Tichelaar2001,Tichelaar2000} is used as a source code model and is extended to support several metrics. A first step to integrate the FAMIX meta-model with version history and bug tracking information has been done by Antoniol \emph{et al.} \cite{Antoniol2005}, who found it useful to be able to investigate the combined data at different levels of abstraction.
+
+Based on the RHDB, Gall \emph{et al.} developed Evolizer \cite{Gall2009}, which acts as a platform for mining software archives, integrated in the Eclipse IDE. Evolizer extends previous work on the RHDB by providing meta-models to represent versioning control systems, bug tracking systems, Java source code, and fine-grained source code changes. Also, it provides extraction of these models from repositories and integration between these models. Java source code is modeled using the FAMIX meta-model \cite{Tichelaar2001,Tichelaar2000}, fine-grained source code changes are extracted using the ChangeDistiller tool.
+
+D'Ambros \emph{et al.} \cite{D'Ambros2010} compared several approaches to predicting the number of post-release defects of a system. They use source code history data (CVS / SVN), source code metrics, defect information from a bug tracker (Bugzilla / JIRA), and a source code model (FAMIX). Bug data and the history model are linked together using pattern matching of bug ids. Also, the history model and source code model are linked using their file structure. 
+
+A large empirical study on issue trackers was performed by Bissyand\'{e} \emph{et al.} in \cite{Bissyande2012}, who collected tens of thousands open source projects from GitHub\footnote{\url{https://github.com/}}. They investigated a possible relation between utilisation of the issue tracker system and project success, who enter issues in the bug tracker (team members or external reporters) and whether the size of the user community impacts the time-to-fix rate of bugs.
+
+In order to further leverage the data offered by such tools as Evolizer, Ghezzi en Gall introduced SOFAS \cite{Ghezzi2008,Ghezzi2010,Ghezzi2011}. They claim that current tools all focus on a particular kind of analysis and all use their own meta-models. Also, it is impossible to compare the results of tools that offer a similar services. In order to overcome these problems they propose a ``distributed and collaborative platform to enable seamless interoperability of software analysis tools \cite{Ghezzi2008}''. SOFAS consists of several ontologies that represent the meta-models and several web services to interact with the data. 
+
+\section{Bug triaging}
+\label{sec:bug_triaging}
+Very often, software repositories are mined in order to assist in bug triaging. Anvik \emph{et al.} \cite{Anvik2005} describe some challenges that exist in \emph{open} bug repositories (i.e., no access restriction, anyone can, for example, create or update a bug report), where lots of bug reports need to be triaged. In this section, we will briefly mention related work for detecting duplicate bugs and expert finding. Next to this, related work to predicting priority, severity and time-to-fix is discussed in more detail, since these are the main topics of this thesis.
+
+\subsection{Duplicate bug reports}
+Duplicate bug reports can be a burden for bug triagers, especially when a lot of bugs are filed a day. Anvik \cite{Anvik2005, Anvik2006} reports that around 30 bugs on average are filed a day for the Mozilla project in 2005. For Mozilla, around 30\% of all bugs are duplicates, in the case of Eclipse this figure is around 20\%. Triagers need to detect these reports and mark them as duplicates in order to make sure different developers are not assigned to the same issue \cite{Sun2011}, and to minimise the number of actual bugs. 
+
+In general there are two approaches to deal with duplicate bug reports: filtering duplicates, preventing them from reaching the triagers, or providing the triager with related bug reports that are possible duplicates. According to Bettenburg \emph{et al.} \cite{Bettenburg2008a}, developers do not consider duplicate bug reports as harmful; they often add useful information that is not considered in the first bug report. This means the first option should probably not be considered.
+
+In order to detect duplicate bugs, most researchers use natural language text methods to measure the similarity between bugs \cite{Sun2011}. In \cite{Wang2008}, a method combining natural language and execution information is proposed.
+
+\subsection{Expert finding}
+When a bug is reported, a triager needs to identify a suitable developer to fix that specific bug. In \cite{Mockus}, Mockus and Herbsleb introduce Expertise Browser, a tool that uses commits in version history systems to identify developers with a specific expertise. G\^{i}rba \emph{et al.} \cite{Girba2005} use a similar approach to the notion of code ownership, i.e., which developer has the most knowledge about a specific part of the source code. 
+
+\v{C}ubrani\'{c} \emph{et al.} \cite{Murphy2004} propose using machine learning techniques and text categorisation to predict which developer should fix a bug, based on the textual information as entered in the Bugzilla report. Anvik \emph{et al.} \cite{Anvik2006} extend the work of \v{C}ubrani\'{c} \emph{et al.} by also using data from the version history repository.
+
+\subsection{Priority and severity}
+Although considerable research has been done on duplicate bug detection and expert finding, priority and severity seem to get somewhat less attention. Menzies en Marcus \cite{Menzies2008} propose a tool to predict the severity of a bug report, which uses a combination of text mining and machine learning. The tool is applied to a data set from NASA, where identifying the most severe bugs during testing is considered very important. Lamkanfi \emph{et al.} \cite{Lamkanfi2010} propose a similar approach using the textual description of a bug. They conclude that, given sufficient training data ($\pm 500$ bug reports for each severity), it is possible to predict the severity of a bug. The approach was tested on selected components from Mozilla, Eclipse and GNOME. 
+
+Regarding priority, almost no related work has been found. This, however, is not very surprising. Severity is considered an absolute classification, where in an ideal situation, different developers will assign the same severity to a bug, based on the impact of this bug. On the other hand, priority is a relative classification, and depends on how urgent a bug is from a business perspective. For example, a bug with a high severity (for example, a system crash), still might get assigned a low priority if the bug in question only occurs in very specific situations.
+
+Kim \emph{et al.} \cite{Kim2011} use automated bug reports (i.e., sent automatically by the crashing program) to predict high priority issues in an early stage. They use machine learning to predict \emph{top crashes} in an early stage of development, for example, in alpha or beta testing. Their approach resulted in a 75-90 percent prediction accuracy when applied to the crash databases of the Firefox and Thunderbird projects.
+
+\subsection{Time-to-fix}
+Bug fix time may not only be used in triaging, but can also tell developers something about quality of the software. For example, if bugs occur very often in a specific file, or if bugs for a specific file take very long to fix, this file might have some architectural or structural problems \cite{Kim2006}.
+
+Wei{\ss} \emph{et al.} \cite{Weiss2007}, Panjer \cite{Panjer2007}, and Giger \cite{Giger2010} all propose methods to predict fix time of bugs. Wei{\ss} \emph{et al.} search for similar reports using text similarity of the title and description. Panjer uses a similar approach and tests several prediction algorithms. He states that commenting activity and severity are most influential in affecting time-to-fix. Finally, Giger \emph{et al.} use bug attributes from past data and decision tree analysis to predict whether a new bug will be fixed \emph{fast} or \emph{slow}. Also, they show that post-submission data, such as the number of comments made to a bug, further improves their model. Around 60-70 percent of incoming bugs can be correctly classified into fast or slow bugs using their prediction model. Post-submission data further improves this performance by 5-10 percent.
+
+Bissyand\'{e} \emph{et al.} \cite{Bissyande2012} researched whether the number of reporters impact the time-to-fix of bugs. They found no correlation between the number of issue reporters and the speed in which issues were fixed.
+
+\section{Quality of bug reports}
+\label{sec:quality_of_bug_reports}
+All bug triage tools use one or more data sources in order to predict certain bug properties. With this, the notion of quality comes to mind, both for the input data as well as the prediction models.
+
+Bettenburg \emph{et al.} \cite{Bettenburg2007, Zimmermann2010} performed a survey among Eclipse developers to determine what aspects make a bug report to have a high quality. Bug reports that are well written are likely to get more attention from developers working on the project. Considered most important in bug reports are steps to reproduce a bug, stack traces and screenshots.  Just \emph{et al.} \cite{Just2008} also point out some similar recommendations in order to improve bug tracking systems, again based on a survey. 
+
+Regarding tools, Bettenburg and Zimmermann introduce the \textsc{cuezilla} tool \cite{Zimmermann2010}, which measures the quality of (new) bug reports and recommends which elements should be added in order to improve the quality of the report. Schugerl \emph{et al.} \cite{Schugerl2008} use natural language processing to assess the quality of free form bug descriptions. 
+
+An extensive comparison of the quality of several bug defect prediction approaches (i.e., how many defects will there be post-release) is presented by D'Ambros \emph{et al.} in \cite{D'Ambros2010}. In this paper, a benchmark is presented to assess the performance of several approaches. They use a predetermined dataset in order to offer a baseline to compare the approaches under investigation. No such benchmarks are known for other triage techniques.
+
+\section{Usage of stack traces}
+\label{sec:usage_of_stack_traces}
+It is shown that many repository mining and bug triaging techniques use textual analysis in order to connect data sources or assist bug triagers. This thesis focuses on the use of stack traces in bug triaging. Therefore, we give an overview of the use of stack traces in related work.
+
+Anvik \emph{et al.} \cite{Anvik2006} use machine learning to predict which developer should fix a particular bug. They consider stack traces as an additional data source that provides pointers to interesting pieces of source code. This might be used for code ownership, and therefore for predicting who should fix a bug. However, they do not expect their results to improve much by using stack traces. Only 11\% of the Eclipse bugs under investigation contained a stack trace. Also, they state that stack traces are ``notoriously misleading as to the cause of the problem'', and might therefore degrade the accuracy of the machine learner.
+
+Bettenburg, Zimmermann, \emph{et al.} developed several tools that use stack traces, next to other bug properties and metrics. In \cite{Bettenburg2007}, a survey shows that the presence of a stack trace is a sign of quality of a bug report, according to bug triagers and developers. Next to this, they developed a prototype tool called quZILLA to automatically measure the quality of bug reports. The usage of the keyword `stack trace' in a bug report is also used to determine the quality score. 
+
+In \cite{Zimmermann2010}, \textsc{cuezilla} (quZILLA seems to be renamed) is used in an extensive study about what makes a good bug report. \textsc{Cuezilla} not only measures quality, but also provides incentives to reporters. Again, developers consider stack traces as important and helpful information in a bug report. However, only a few reporters add stack traces to their reports. This might be because it is quite hard to provide stack traces, since they are not always showed to a reporter in an easy way (they are, for example, hidden in log files). The paper shows that there is mismatch between what developers use and reporters provide. Interestingly, the research also shows that reporters \emph{are} aware of the information developers want. Ignorance of users can therefore not be claimed to be the reason for the information mismatch. This research also shows that the presence of a stack trace significantly increases the likelihood of a `fixed' resolution.
+
+In \cite{Bettenburg2008}, Bettenburg, Zimmermann, \emph{et al.} extract structural information from bug reports using the infoZilla tool. They describe a stack trace filter that uses regular expressions to extract stack traces. Additional regular expressions are then used to split up the stack trace in, for example, stack trace frames. This results in an accuracy of 98.5\% in detecting stack traces. No false positives were found, several false negatives occurred when stack traces were interwoven with natural language.
+
+InfoZilla is first used in \cite{Bettenburg2008a} to assist in detecting duplicate bug reports. With this, stack traces are used on several levels of granularity. Next to the exception alone, also a number of $n$ unique stack trace frames is included in the comparison (for $n = 1,\dots,5$). On average, they found 0.981 stack traces in duplicate bug reports. Next to this, on average 0.118 occurrences of additional stack traces were found in duplicates. Also, 0.281 occurrences of stack traces were found in duplicate bug reports that contained new code locations in their top five frames. This means that duplicate bug reports are likely to provide additional information, for example, by providing more pointers to source code using additional stack traces.
+
+Schr\"{o}ter \emph{et al.} \cite{Schroter2010} researched if stack traces do actually help developers fix bugs. They also acknowledge that stack traces can possibly be used to narrow down the list of candidate files that might contain a bug. A stack trace is considered to contribute to fixing a bug, if changes were made in one or more methods mentioned in the stack trace. Four research questions are answered in the paper:
+
+\begin{enumerate*}
+	\item Are bugs fixed in methods mentioned in stack trace frames?
+	\item If so, how far down the stack frames?
+	\item Are two (or more) stack traces better than one?
+	\item Do stack traces help speed up debugging?
+\end{enumerate*}
+
+In order to answer these questions, infoZilla is again used to extract stack traces. The bug reports are linked to the version repository using textual analysis (matching bug ids, et cetera). The research shows that in up to 60\% of fixed bug reports that contain a stack trace, changes are made to methods mentioned in the stack traces. Defects are mostly found in the top 10 stack frames. In 70\% of the resolved bugs, the bug is fixed in a stack frame from the first stack trace in a report. Close to 95\% of all bugs are fixed using the first three stack traces. Finally, strong evidence is found to suggest that bug reports that include a stack trace have a shorter life time, compared to bug reports without a stack trace. The life time of a bug further decreases when the bug is fixed in a method mentioned in one of the stack frames.
+
+% chapter related_work (end)
